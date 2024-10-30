@@ -3,7 +3,8 @@ import numpy as np
 import math,sys,os
 from pygame.locals import *
 from src.onMap import map
-from src.typeIn import box
+from src.measure import yaw
+
 import pygame.freetype as freetype
 
 # 変数
@@ -86,14 +87,19 @@ while True:
                 if flag:#marking
                     if map.check(x2):
                         # 記録
-                        if x1 != x2 and y1 != y2:
+                        if x1 == x2 and y1 == y2:
+                            print(x1,x2,y1,y2)
+                            line.pop()
+                            dist.pop()
+                        else:
                             line[-1] = ([x1,y1,x2,y2])
                             pixel = np.sqrt((line[i][2]-line[i][0])**2+(line[i][3]-line[i][1])**2)
                             dist[-1] = ACTUAL_SIZE[1]/MAP_SIZE[1]*pixel
+                    if deg:
+                        if math.tan(math.radians(int(yaw(deg)))) > 1:
+                            pygame.mouse.set_pos(x2,y1-round(1/math.tan(math.radians(yaw(deg)))*(x2-x1),3))
                         else:
-                            line.pop()
-                            dist.pop()
-                    pygame.mouse.set_pos(x2,y1-round(math.tan(math.radians(float(deg)))*(x2-x1),3))
+                            pygame.mouse.set_pos(x1-round(math.tan(math.radians(yaw(deg)))*(y2-y1),3),y2)
                     x1,y1 = x2,y2
                     flag = True
                     if map.check(x1):
@@ -129,8 +135,9 @@ while True:
                     dist.pop()
                 except IndexError:pass
             if SIZE[0]-posM[0] < 200 and posM[1]>SIZE[1]/3: # COPY distance
-                print((posM[1] - SIZE[1]/3)//20)
-                try:pygame.scrap.put(SCRAP_TEXT, str(dist[int((posM[1] - SIZE[1]/3)//20)]).encode())
+                try:
+                    pygame.scrap.put(SCRAP_TEXT, str(dist[int((posM[1] - SIZE[1]/3)//20)]).encode())
+                    print((posM[1] - SIZE[1]/3)//20,str(dist[int((posM[1] - SIZE[1]/3)//20)]))
                 except IndexError:
                     message = messageFont.render("There's noting there", True, (255,0,0))
                     messageTick = pygame.time.get_ticks()
@@ -142,9 +149,11 @@ while True:
             except NameError:ox,oy = event.pos
             x2,y2 = event.pos
             if deg:#マウス角度制限
-                #pygame.mouse.set_pos(x2,y1-round(math.tan(math.radians(float(deg)))*(x2-x1),3))
-                print(x2,y2,"       ",x2,y1-round(math.tan(math.radians(float(deg)))*(x2-x1),3))
-                x2,y2 = x2,y1-round(math.tan(math.radians(float(deg)))*(x2-x1),3)
+                print(round(math.tan(math.radians(float(yaw(deg)))),10))
+                if math.tan(math.radians(float(yaw(deg)))) > 1:
+                    x2,y2 = x2,y1-round(1/math.tan(math.radians(yaw(deg)))*(x2-x1),3)
+                else:
+                    x2,y2 = x1-round(math.tan(math.radians(yaw(deg)))*(y2-y1),3),y2
             if x2 > MAP_SIZE[0]:
                 pygame.mouse.set_pos((MAP_SIZE[0], y2))
                 x2 = MAP_SIZE[0]
@@ -161,10 +170,13 @@ while True:
             if active:
                 if event.key == K_BACKSPACE:
                     deg = deg[:-1]
-                elif event.unicode.isdigit() and len(deg) < 3:
+                elif (event.unicode.isdigit() or event.key == K_MINUS) and len(str(abs(int(deg if deg.isdigit() else 0)))) < 3:
                     deg += event.unicode
             if event.key == K_TAB:
+                if not active:deg = ''
                 active = not active
+            if event.key == K_KP_ENTER:
+                active = False
         # FINISH
         if event.type == QUIT:  
             pygame.quit()
