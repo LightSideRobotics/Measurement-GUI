@@ -24,6 +24,7 @@ screen = pygame.display.set_mode(SIZE)
 pygame.scrap.init()
 font = pygame.font.SysFont('Courier New', 16)
 title = pygame.font.SysFont('Courier New', 30)
+num = pygame.font.SysFont(None, 30)
 pygame.display.set_caption("Measuring FLL 2024-2025 Field (mm)")
 icon = pygame.image.load('img/icon.png')
 pygame.display.set_icon(icon)
@@ -53,18 +54,37 @@ while True:
     for pos in line:
         pygame.draw.line(screen, (50,150,0), (pos[0],pos[1]), (pos[2],pos[3]), THICK)
         # Number
-    for i in range(len(line)):pass
+    for i in range(len(line)):
+        pos = line[i]
+        screen.blit(num.render(str(i) , True, (255,0,255)),(pos[0],pos[1]))
     pygame.display.update()
 
     for event in pygame.event.get(): # INPUT
         # DOWN
         if event.type == MOUSEBUTTONDOWN:
             posM = event.pos
-            if event.button == 1: # APPEND
+            if event.button == 1: # LEFT
                 x1,y1 = posM
                 if map.check(x1):
                     # 記録
                     flag = 1
+                    # リストに追加
+                    line.append([x1,y1,x1,y1])
+                    dist.append(0)
+            if event.button == 3 and flag==1: # LEFT
+                x2,y2 = event.pos
+                if map.check(x2):
+                    # 記録
+                    if x1 != x2 and y1 != y2:
+                        line[-1] = ([x1,y1,x2,y2])
+                        pixel = np.sqrt((line[i][2]-line[i][0])**2+(line[i][3]-line[i][1])**2)
+                        dist[-1] = ACTUAL_SIZE[1]/MAP_SIZE[1]*pixel
+                    else:
+                        line.pop()
+                        dist.pop()
+                x1,y1 = posM
+                if map.check(x1):
+                    # 記録
                     # リストに追加
                     line.append([x1,y1,x1,y1])
                     dist.append(0)
