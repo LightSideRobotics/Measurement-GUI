@@ -4,6 +4,7 @@ import sys
 import os
 from pygame.locals import *
 from src.onMap import map
+from src.typeIn import box
 
 # 変数
 offset = 132
