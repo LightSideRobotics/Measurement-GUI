@@ -147,6 +147,10 @@ while True:
         if flag and event.type == MOUSEMOTION:
             x2,y2 = event.pos
             if deg:#マウス角度制限
+<<<<<<< HEAD
+=======
+                print(round(math.tan(math.radians(float(yaw(deg)))),10))
+>>>>>>> a09afb5137b2fc46723a7c1e396954a38cdb02fc
                 if math.tan(math.radians(float(yaw(deg)))) > 1:
                     x2,y2 = x2,y1-round(1/math.tan(math.radians(yaw(deg)))*(x2-x1),3)
                 else:
