@@ -27,7 +27,7 @@ font = pygame.font.SysFont('Courier New', 16)
 title = pygame.font.SysFont('Courier New', 30)
 num = pygame.font.SysFont(None, 30)
 pygame.display.set_caption("Measuring FLL 2024-2025 Field (mm)")
-icon = pygame.image.load('img/icon.png')
+icon =  pygame.image.load('img/icon.png')
 pygame.display.set_icon(icon)
 
 reset = pygame.Rect(SIZE[0]-180, 20, 160, 50)
