@@ -8,7 +8,7 @@ from src.measure import yaw
 import pygame.freetype as freetype
 
 # 変数
-offset = 132
+offset = 0#132
 ACTUAL_SIZE = [2362,1143]
 MAP_SIZE = (980+offset,538)
 SIZE = (MAP_SIZE[0]+200, MAP_SIZE[1]) 
