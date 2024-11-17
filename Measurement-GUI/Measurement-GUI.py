@@ -3,7 +3,6 @@ import numpy as np
 import math,sys,os
 from pygame.locals import *
 from src.onMap import map
-from src.measure import yaw
 
 import pygame.freetype as freetype
 
@@ -96,10 +95,10 @@ while True:
                             pixel = np.sqrt((line[i][2]-line[i][0])**2+(line[i][3]-line[i][1])**2)
                             dist[-1] = ACTUAL_SIZE[1]/MAP_SIZE[1]*pixel
                     if deg:
-                        if math.tan(math.radians(int(yaw(deg)))) > 1:
-                            pygame.mouse.set_pos(x2,y1-round(1/math.tan(math.radians(yaw(deg)))*(x2-x1),3))
+                        if math.tan(math.radians(int(float(deg)))) > 1:
+                            pygame.mouse.set_pos(x2,y1-round(1/math.tan(math.radians(float(deg)))*(x2-x1),3))
                         else:
-                            pygame.mouse.set_pos(x1-round(math.tan(math.radians(yaw(deg)))*(y2-y1),3),y2)
+                            pygame.mouse.set_pos(x1-round(math.tan(math.radians(float(deg)))*(y2-y1),3),y2)
                     x1,y1 = x2,y2
                     flag = True
                     if map.check(x1):
@@ -147,10 +146,10 @@ while True:
         if flag and event.type == MOUSEMOTION:
             x2,y2 = event.pos
             if deg:#マウス角度制限
-                if math.tan(math.radians(float(yaw(deg)))) > 1:
-                    x2,y2 = x2,y1-round(1/math.tan(math.radians(yaw(deg)))*(x2-x1),3)
+                if math.tan(math.radians(float(float(deg)))) > 1:
+                    x2,y2 = x2,y1-round(1/math.tan(math.radians(float(deg)))*(x2-x1),3)
                 else:
-                    x2,y2 = x1-round(math.tan(math.radians(yaw(deg)))*(y2-y1),3),y2
+                    x2,y2 = x1-round(math.tan(math.radians(float(deg)))*(y2-y1),3),y2
             if x2 > MAP_SIZE[0]:
                 pygame.mouse.set_pos((MAP_SIZE[0], y2))
                 x2 = MAP_SIZE[0]
